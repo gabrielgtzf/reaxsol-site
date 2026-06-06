@@ -1,0 +1,107 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import productosData from '../../data/productos.json';
+
+export async function getStaticPaths() {
+  return productosData.map(prod => ({
+    params: { slug: prod.slug },
+    props: { producto: prod }
+  }));
+}
+
+const { producto } = Astro.props;
+const tieneML = producto.ventaML;
+const soloDirecto = !tieneML;
+---
+
+<Layout title={`${producto.nombre} | REAXSOL`}>
+  <div class="container" style="padding: 2rem 0;">
+    <!-- Migas de pan -->
+    <p style="font-size: 0.8rem; color: #666;">
+      <a href="/" style="color: #000099;">Inicio</a> /
+      <a href="/productos" style="color: #000099;">Productos</a> /
+      <span style="color: #000099; font-weight: bold;">{producto.nombre}</span>
+    </p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem;">
+      <div>
+          {producto.imagenGrande && (
+            <img src={producto.imagenGrande} alt={producto.nombre} style="width: 100%; max-width: 400px; height: auto; margin-bottom: 1rem; border-radius: 0.5rem;">
+          )}
+        <h1 style="color: #000099; margin-top: 0;">{producto.nombre}</h1>
+        <p><strong>Clave:</strong> {producto.clave} | <strong>Unidad:</strong> {producto.unidad}</p>
+
+        {producto.soloB2B && (
+          <div style="background-color: #ffff00; color: #000099; padding: 0.5rem; border-radius: 0.3rem; margin-bottom: 1rem; font-weight: bold;">
+            ⚠️ Producto exclusivo para uso industrial (B2B). No disponible en Mercado Libre.
+          </div>
+        )}
+
+        <div style="margin: 1.5rem 0;">
+          <h3>Descripción</h3>
+          <p>{producto.descripcion}</p>
+        </div>
+
+        <div style="margin: 2rem 0;">
+          <h3>Documentos técnicos</h3>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            {producto.tieneFicha && (
+              <a href={producto.urlFicha} class="btn btn-primary" download style="background-color: #000099; color: #ffff00;">📄 Ficha técnica (PDF)</a>
+            )}
+            {producto.tieneHDS && (
+              <a href={producto.urlHDS} class="btn btn-primary" download style="background-color: #000099; color: #ffff00;">⚠️ Hoja de seguridad (PDF)</a>
+            )}
+            {!producto.tieneFicha && !producto.tieneHDS && (
+              <p style="color: #666;">Este producto no cuenta con fichas técnicas o SDS disponibles en línea. Consúltenos.</p>
+            )}
+          </div>
+        </div>
+
+        <div style="margin: 2rem 0;">
+          <h3>Canales de venta</h3>
+          <ul>
+            <li>✅ Tienda física en Ecatepec</li>
+            <li>✅ Envíos a toda la República</li>
+            {tieneML ? <li>✅ Mercado Libre disponible</li> : <li>❌ No disponible en Mercado Libre</li>}
+          </ul>
+        </div>
+      </div>
+
+      <div style="background-color: var(--gris-claro); padding: 1.5rem; border-radius: 0.5rem; align-self: start;">
+        <h3 style="color: #000099; margin-top: 0;">Solicitar precio</h3>
+        <p>Precio no mostrado públicamente. Contáctenos para cotización personalizada.</p>
+
+        <form action="/gracias" method="post" data-netlify="true" netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="cotizacion-producto">
+          <input type="hidden" name="producto" value={producto.clave}>
+          <div style="margin-bottom: 1rem;">
+            <label>Nombre completo *</label>
+            <input type="text" name="nombre" required style="width: 100%; padding: 0.5rem;">
+          </div>
+          <div style="margin-bottom: 1rem;">
+            <label>Correo electrónico *</label>
+            <input type="email" name="email" required style="width: 100%; padding: 0.5rem;">
+          </div>
+          <div style="margin-bottom: 1rem;">
+            <label>Teléfono (opcional)</label>
+            <input type="tel" name="telefono" style="width: 100%; padding: 0.5rem;">
+          </div>
+          <div style="margin-bottom: 1rem;">
+            <label>Cantidad / especificación</label>
+            <input type="text" name="cantidad" placeholder="Ej. 200 kg" style="width: 100%; padding: 0.5rem;">
+          </div>
+          <button type="submit" class="btn btn-primary" style="background-color: #000099; color: #ffff00; width: 100%;">Enviar cotización</button>
+        </form>
+
+        <p style="font-size: 0.7rem; text-align: center; margin-top: 1rem;">WhatsApp: <a href="https://wa.me/525557151454" style="color: #000099;">55 5715 1454</a></p>
+      </div>
+    </div>
+
+    {producto.tieneHDS && (
+      <div style="margin-top: 3rem; background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem;">
+        <h4 style="color: #856404;">⚠️ Información de seguridad</h4>
+        <p style="font-size: 0.9rem;">Consulte la Hoja de Seguridad (SDS) antes de usar este producto. <a href={producto.urlHDS} style="color: #000099;">Descargar SDS</a></p>
+      </div>
+    )}
+  </div>
+</Layout>

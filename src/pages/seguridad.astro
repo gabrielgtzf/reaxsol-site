@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro';
+import productosData from '../data/productos.json';
+
+const productosConHDS = productosData.filter(p => p.tieneHDS);
+---
+
+<Layout title="Seguridad y hojas SDS | REAXSOL">
+  <div class="container" style="padding: 2rem 0;">
+    <h1 style="color: #000099;">Hojas de seguridad (SDS)</h1>
+    <p>Descargue las hojas de seguridad de nuestros productos químicos. Siempre consulte la SDS antes de manipular.</p>
+
+    <ul style="margin-top: 2rem; list-style: none; padding-left: 0;">
+      {productosConHDS.map(prod => (
+        <li style="margin-bottom: 1rem; padding: 0.5rem; background: #f5f5f5; border-radius: 0.5rem;">
+          <strong>{prod.nombre}</strong> (clave {prod.clave})
+          <a href={prod.urlHDS} class="btn btn-primary" download style="margin-left: 1rem; background-color: #000099; color: #ffff00; padding: 0.2rem 0.8rem; text-decoration: none;">⚠️ Descargar SDS</a>
+        </li>
+      ))}
+    </ul>
+    <p>¿No encuentra alguna hoja? <a href="/contacto">Solicítela aquí</a>.</p>
+  </div>
+</Layout>

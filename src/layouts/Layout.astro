@@ -1,23 +1,108 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+---
+// src/layouts/Layout.astro
+// Este layout envuelve todas las páginas
+export interface Props {
+  title: string;
+  description?: string;
+}
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+const { title, description = "REAXSOL - En resinas, calidad y servicio nos distinguen" } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{title} | REAXSOL</title>
+  <meta name="description" content={description}>
+  <link rel="icon" type="image/png" href="/favicon-16x16.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/styles/global.css">
+  <style is:global>
+    /* reset adicional y estilos base que no quedaron en global.css */
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    main {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <header style="background-color: #000099; padding: 1rem 0; border-bottom: 4px solid #ffff00;">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+      <div>
+        <a href="/">
+          <img src="/logos/logo-reaxsol.png" alt="REAXSOL - En resinas, calidad y servicio nos distinguen" style="max-width: 250px; height: auto; display: block;">
+        </a>
+      </div>
+      <nav>
+        <a href="/" style="color: white; margin: 0 0.75rem;">Inicio</a>
+        <a href="/productos" style="color: white; margin: 0 0.75rem;">Productos</a>
+        <a href="/blog" style="color: white; margin: 0 0.75rem;">Blog</a>
+        <a href="/recursos" style="color: white; margin: 0 0.75rem;">Recursos</a>
+        <a href="/sucursal" style="color: white; margin: 0 0.75rem;">Sucursal</a>
+        <a href="/contacto" style="color: white; margin: 0 0.75rem;">Contacto</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <slot /> <!-- Aquí se inyecta el contenido de cada página -->
+  </main>
+
+  <footer style="background-color: #000099; color: #ffff99; padding: 2rem 0; margin-top: 3rem;">
+    <div class="container">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+        <!-- Columna 1: Compras -->
+        <div>
+          <h4 style="color: #ffff00; margin-bottom: 0.5rem;">Compras</h4>
+          <ul style="list-style: none;">
+            <li><a href="/productos" style="color: #ffff99;">Catálogo completo</a></li>
+            <li><a href="/sucursal" style="color: #ffff99;">Tienda física</a></li>
+            <li><a href="/envios" style="color: #ffff99;">Envíos</a></li>
+            <li><a href="https://wa.me/525557151454" style="color: #ffff99;">WhatsApp</a></li>
+          </ul>
+        </div>
+        <!-- Columna 2: Legal (se llenará después) -->
+        <div>
+          <h4 style="color: #ffff00; margin-bottom: 0.5rem;">Legal</h4>
+          <ul style="list-style: none;">
+            <li><a href="/aviso-privacidad" style="color: #ffff99;">Aviso de privacidad</a></li>
+            <li><a href="/terminos" style="color: #ffff99;">Términos y condiciones</a></li>
+          </ul>
+        </div>
+        <!-- Columna 3: Suscríbete -->
+        <div>
+          <h4 style="color: #ffff00; margin-bottom: 0.5rem;">Suscríbete</h4>
+          <form action="/suscribir" method="post" data-netlify="true" netlify-honeypot="bot-field">
+            <input type="email" name="email" placeholder="tu correo electrónico" required style="padding: 0.5rem; width: 100%; margin-bottom: 0.5rem;">
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Suscribirme</button>
+          </form>
+        </div>
+        <!-- Columna 4: Para tu seguridad -->
+        <div>
+          <h4 style="color: #ffff00; margin-bottom: 0.5rem;">Para tu seguridad</h4>
+          <ul style="list-style: none;">
+            <li><a href="/canales-oficiales" style="color: #ffff99;">Canales oficiales</a></li>
+            <li><a href="/garantia" style="color: #ffff99;">Devolución y garantía</a></li>
+            <li><a href="/seguridad" style="color: #ffff99;">Hojas de seguridad</a></li>
+          </ul>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #ffff33; font-size: 0.8rem;">
+        © 2025 REAXSOL – Reactivos y Resinas S.A. de C.V. <br>
+        Vicente Guerrero No. 20, Col. Urbana Ixhuatepec, Ecatepec, Méx., CP 55349 <br>
+        Tel: 55 5715 1454 | 55 5715 1579 | servicios@reaxsol.com
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script para chat de ChatGPT embed (lo añadiremos después) -->
+</body>
+</html>

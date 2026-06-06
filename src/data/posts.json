@@ -1,0 +1,26 @@
+[
+  {
+    "slug": "catalizador-adecuado",
+    "titulo": "Cómo elegir el catalizador adecuado para ti",
+    "fecha": "10 de marzo de 2025",
+    "resumen": "Conoce los tipos de peróxido de MEK y su uso seguro en resinas de poliéster.",
+    "contenido": "<p>El peróxido de metiletilcetona (MEKP) es el catalizador más común para resinas de poliéster. Existen diferentes concentraciones y formulaciones. Para proyectos pequeños se recomienda una concentración del 1-2% sobre el peso de la resina...</p><p>Siempre agregue el catalizador sobre la resina ya promovida, nunca al revés. Almacene en lugar fresco y seco.</p>",
+    "miniatura": "https://picsum.photos/id/30/400/200"
+  },
+  {
+    "slug": "mantenimiento-moldes",
+    "titulo": "Mantenimiento de moldes de fibra de vidrio",
+    "fecha": "25 de febrero de 2025",
+    "resumen": "Alarga la vida de tus moldes con estos consejos prácticos.",
+    "contenido": "<p>Los moldes de fibra de vidrio requieren limpieza regular, aplicación de cera desmoldante y reparación de pequeñas grietas...</p>",
+    "miniatura": "https://picsum.photos/id/95/400/200"
+  },
+  {
+    "slug": "resinas-ecologicas",
+    "titulo": "Nuevas aplicaciones de resinas ecológicas",
+    "fecha": "5 de febrero de 2025",
+    "resumen": "La industria busca alternativas sostenibles. Te contamos las tendencias.",
+    "contenido": "<p>Las resinas de base biológica están ganando terreno. Ofrecen menor huella de carbono y propiedades similares a las resinas convencionales...</p>",
+    "miniatura": "https://picsum.photos/id/33/400/200"
+  }
+]

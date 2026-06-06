@@ -1,11 +1,162 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
+import postsData from '../data/posts.json';
+import productosData from '../data/productos.json';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// Ordenar posts por fecha descendente (asumiendo formato "DD de MMMM de YYYY" - no es ideal, pero funciona para este ejemplo)
+// Para un orden más robusto, recomiendo usar fecha ISO (YYYY-MM-DD). Asumiré que el formato es comparable como string.
+const postsOrdenados = [...postsData].sort((a, b) => b.fecha.localeCompare(a.fecha));
+const ultimosPosts = postsOrdenados.slice(0, 3);
+// Recursos técnicos: productos que tengan ficha o SDS, tomar los primeros 6
+const recursos = productosData.filter(p => p.tieneFicha || p.tieneHDS).slice(0, 6);
+// Tomar solo los primeros 6 productos como destacados (o puede filtrar los más vendidos después)
+const productosDestacados = productosData.slice(0, 6);
+
+// Blog posts (ejemplo)
+const blogPosts = [
+  {
+    titulo: 'Cómo elegir el catalizador adecuado para tu proyecto',
+    fecha: '10 de marzo de 2025',
+    resumen: 'Conoce los tipos de peróxido de MEK y su uso seguro en resinas de poliéster.',
+    url: '/blog/catalizador-adecuado',
+    miniatura: 'https://picsum.photos/id/30/400/200'  // placeholder
+  },
+  {
+    titulo: 'Mantenimiento de moldes de fibra de vidrio',
+    fecha: '25 de febrero de 2025',
+    resumen: 'Alarga la vida de tus moldes con estos consejos prácticos.',
+    url: '/blog/mantenimiento-moldes',
+    miniatura: 'https://picsum.photos/id/95/400/200'
+  },
+  {
+    titulo: 'Nuevas aplicaciones de resinas ecológicas',
+    fecha: '5 de febrero de 2025',
+    resumen: 'La industria busca alternativas sostenibles. Te contamos las tendencias.',
+    url: '/blog/resinas-ecologicas',
+    miniatura: 'https://picsum.photos/id/33/400/200'
+  }
+];
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="REAXSOL - Resinas y servicios con calidad">
+  <!-- HERO con imagen de fondo y formulario -->
+  <section style="background: linear-gradient(rgba(0,0,153,0.8), rgba(0,0,153,0.8)), url('https://picsum.photos/id/104/1920/600'); background-size: cover; background-position: center; color: white; padding: 4rem 0;">
+    <div class="container">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center;">
+        <div>
+          <h1 style="color: #ffff00; font-size: 2.8rem;">REAXSOL</h1>
+          <p style="font-size: 1.4rem; margin: 1rem 0;">En resinas, calidad y servicio nos distinguen</p>
+          <p>Más de 50 años fabricando resinas de poliéster insaturado, catalizadores y productos para fibra de vidrio. Venta a toda la República desde nuestra matriz en Ecatepec.</p>
+          <div style="margin-top: 1.5rem;">
+            <a href="#productos" class="btn btn-primary" style="margin-right: 1rem;">Ver productos</a>
+            <a href="/contacto" class="btn btn-outline" style="background: white; color: #000099;">Contacto</a>
+          </div>
+        </div>
+        <div id="formulario-hero" style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+          <h3 style="color: #000099; margin-top: 0;">Solicita una cotización</h3>
+          <form action="/gracias" method="post" data-netlify="true" netlify-honeypot="bot-field">
+            <input type="hidden" name="form-name" value="cotizacion-hero">
+            <div style="margin-bottom: 1rem;">
+              <label style="color: #000099; display: block; margin-bottom: 0.25rem;">Nombre completo *</label>
+              <input type="text" name="nombre" required style="width: 100%; padding: 0.5rem;">
+            </div>
+            <div style="margin-bottom: 1rem;">
+              <label style="color: #000099; display: block; margin-bottom: 0.25rem;">Correo electrónico *</label>
+              <input type="email" name="email" required style="width: 100%; padding: 0.5rem;">
+            </div>
+            <div style="margin-bottom: 1rem;">
+              <label style="color: #000099; display: block; margin-bottom: 0.25rem;">Producto de interés</label>
+              <input type="text" name="producto" style="width: 100%; padding: 0.5rem;" placeholder="Ej. Resina RG4-EP">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; background-color: #000099; color: #ffff00; border: none;">Enviar mensaje</button>
+          </form>
+          <p style="font-size: 0.7rem; color: gray; text-align: center; margin-top: 1rem;">No compartimos tu información. Te responderemos en menos de 24h.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Productos destacados (6) -->
+  <section id="productos" class="container" style="padding: 3rem 0;">
+    <h2 class="text-center" style="color: #000099;">Productos destacados</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+      {productosDestacados.map(prod => (
+        <div style="border: 1px solid var(--gris-borde); border-radius: 0.5rem; padding: 1rem; background: white;">
+          {prod.imagenMini && (
+            <img src={prod.imagenMini} alt={prod.nombre} loading="lazy" style="width: 100%; max-width: 150px; height: auto; display: block; margin: 0 auto 0.5rem auto; border-radius: 0.25rem;">
+          )}
+          <h3 style="color: #000099; font-size: 1.25rem;">
+            <a href={`/productos/${prod.slug}`} style="color: #000099; text-decoration: none;">{prod.nombre}</a>
+          </h3>
+          <p>Clave: {prod.clave} | Unidad: {prod.unidad}</p>
+          <p>{prod.descripcion.substring(0, 100)}...</p>
+          <div style="margin: 1rem 0;">
+            <a href={`/productos/${prod.slug}`} class="btn btn-primary" style="background-color: #000099; color: #ffff00;">Consultar precio</a>
+          </div>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; font-size: 0.7rem;">
+            {prod.tieneFicha && <span style="background: #eee; padding: 0.2rem 0.5rem;">📄 Ficha</span>}
+            {prod.tieneHDS && <span style="background: #eee; padding: 0.2rem 0.5rem;">⚠️ HDS</span>}
+            {prod.ventaML && <span style="background: #ffff00; color: #000099; padding: 0.2rem 0.5rem;">🛒 ML</span>}
+            {!prod.ventaML && <span style="background: #ddd; padding: 0.2rem 0.5rem;">📞 Venta directa</span>}
+          </div>
+        </div>
+      ))}
+    </div>
+    <div class="text-center mt-4">
+      <a href="/productos" class="btn btn-outline">Ver catálogo completo →</a>
+    </div>
+  </section>
+
+  <!-- Blog con miniaturas -->
+  <section style="background-color: var(--gris-claro); padding: 3rem 0;">
+    <div class="container">
+      <h2 class="text-center" style="color: #000099;">Últimas noticias y consejos</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
+        {ultimosPosts.map(post => (
+          <div style="background: white; border-radius: 0.5rem; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <img src={post.miniatura} alt={post.titulo} style="width: 100%; height: 160px; object-fit: cover;">
+            <div style="padding: 1rem;">
+              <h3 style="font-size: 1.2rem; margin: 0 0 0.5rem;"><a href={`/blog/${post.slug}`} style="color: #000099;">{post.titulo}</a></h3>
+              <p style="font-size: 0.8rem; color: #666;">{post.fecha}</p>
+              <p style="font-size: 0.9rem;">{post.resumen}</p>
+              <a href={`/blog/${post.slug}`} class="btn btn-primary" style="background-color: #000099; color: #ffff00; font-size: 0.8rem; padding: 0.3rem 0.8rem;">Leer más →</a>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div class="text-center mt-4">
+        <a href="/blog" class="btn btn-outline">Ver todos los artículos</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recursos técnicos (acceso rápido) -->
+  <section class="container" style="padding: 3rem 0;">
+    <h2 class="text-center" style="color: #000099;">Recursos técnicos</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-top: 2rem;">
+      {recursos.map(prod => (
+        <div style="background: var(--gris-claro); padding: 0.8rem; border-radius: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <strong>{prod.nombre}</strong>
+            <div style="font-size: 0.7rem;">
+              {prod.tieneFicha && <span>📄 Ficha</span>}
+              {prod.tieneHDS && <span> ⚠️ SDS</span>}
+            </div>
+          </div>
+          <div>
+            {prod.tieneFicha && <a href={prod.urlFicha} download style="background-color: #000099; color: #ffff00; padding: 0.2rem 0.5rem; border-radius: 0.3rem; text-decoration: none; font-size: 0.7rem;">PDF</a>}
+            {prod.tieneHDS && <a href={prod.urlHDS} download style="background-color: #000099; color: #ffff00; padding: 0.2rem 0.5rem; border-radius: 0.3rem; text-decoration: none; font-size: 0.7rem; margin-left: 0.5rem;">SDS</a>}
+          </div>
+        </div>
+      ))}
+    </div>
+    <div class="text-center mt-4">
+      <a href="/recursos" class="btn btn-outline">Ver biblioteca completa →</a>
+    </div>
+  </section>
+
+  <!-- Botón flotante que lleva al formulario del Hero (solo visible en móvil opcional) -->
+  <div style="position: fixed; bottom: 1rem; right: 1rem; z-index: 100;">
+    <a href="#formulario-hero" class="btn btn-primary" style="background-color: #ffff00; color: #000099; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">✉️ Cotizar</a>
+  </div>
 </Layout>

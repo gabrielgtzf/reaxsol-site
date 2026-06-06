@@ -1,0 +1,25 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import posts from '../../data/posts.json';
+---
+
+<Layout title="Blog | REAXSOL">
+  <div class="container" style="padding: 2rem 0;">
+    <h1 style="color: #000099;">Blog</h1>
+    <p>Consejos, novedades y aplicaciones de resinas y fibras de vidrio.</p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
+      {posts.map(post => (
+        <div style="border: 1px solid #e0e0e0; border-radius: 0.5rem; overflow: hidden; background: white;">
+          <img src={post.miniatura} alt={post.titulo} style="width: 100%; height: 160px; object-fit: cover;">
+          <div style="padding: 1rem;">
+            <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem;"><a href={`/blog/${post.slug}`} style="color: #000099;">{post.titulo}</a></h2>
+            <p style="font-size: 0.8rem; color: #666;">{post.fecha}</p>
+            <p>{post.resumen}</p>
+            <a href={`/blog/${post.slug}`} class="btn btn-primary" style="background-color: #000099; color: #ffff00;">Leer más →</a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</Layout>

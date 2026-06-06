@@ -1,0 +1,41 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import productosData from '../../data/productos.json';
+
+// Filtrar productos que tienen al menos una ficha o HDS
+const productosConDocumentos = productosData.filter(p => p.tieneFicha || p.tieneHDS);
+
+// Para ordenar alfabéticamente por nombre
+productosConDocumentos.sort((a, b) => a.nombre.localeCompare(b.nombre));
+---
+
+<Layout title="Recursos técnicos | Fichas y HDS">
+  <div class="container" style="padding: 2rem 0;">
+    <h1 style="color: #000099;">Recursos técnicos</h1>
+    <p>Acceda a las fichas técnicas y hojas de seguridad (SDS) de nuestros productos. Si no encuentra algún documento, contáctenos.</p>
+
+    <div style="margin-top: 2rem;">
+      <h2 style="background-color: #000099; color: #ffff00; display: inline-block; padding: 0.3rem 1rem; border-radius: 0.3rem;">Fichas técnicas</h2>
+      <ul style="list-style: none; padding-left: 0; margin-top: 1rem;">
+        {productosConDocumentos.filter(p => p.tieneFicha).map(prod => (
+          <li style="margin-bottom: 1rem; padding: 0.5rem; background: #f5f5f5; border-radius: 0.5rem;">
+            <strong>{prod.nombre}</strong> (clave {prod.clave})
+            <a href={prod.urlFicha} class="btn btn-primary" download style="margin-left: 1rem; background-color: #000099; color: #ffff00; padding: 0.2rem 0.8rem; text-decoration: none; border-radius: 0.3rem;">📄 Descargar PDF</a>
+            <a href={`/productos/${prod.slug}`} style="margin-left: 1rem; color: #000099;">Ver producto →</a>
+          </li>
+        ))}
+      </ul>
+
+      <h2 style="background-color: #000099; color: #ffff00; display: inline-block; padding: 0.3rem 1rem; border-radius: 0.3rem; margin-top: 2rem;">Hojas de seguridad (SDS)</h2>
+      <ul style="list-style: none; padding-left: 0; margin-top: 1rem;">
+        {productosConDocumentos.filter(p => p.tieneHDS).map(prod => (
+          <li style="margin-bottom: 1rem; padding: 0.5rem; background: #f5f5f5; border-radius: 0.5rem;">
+            <strong>{prod.nombre}</strong> (clave {prod.clave})
+            <a href={prod.urlHDS} class="btn btn-primary" download style="margin-left: 1rem; background-color: #000099; color: #ffff00; padding: 0.2rem 0.8rem; text-decoration: none; border-radius: 0.3rem;">⚠️ Descargar PDF</a>
+            <a href={`/productos/${prod.slug}`} style="margin-left: 1rem; color: #000099;">Ver producto →</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</Layout>

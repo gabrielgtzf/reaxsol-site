@@ -1,0 +1,159 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import productosData from '../../data/productos.json';
+import lineasData from '../../data/lineas.json';
+
+// Ordenar líneas según campo "orden"
+const lineasOrdenadas = [...lineasData].sort((a, b) => a.orden - b.orden);
+
+// Definir el tipo del agrupador
+type Producto = typeof productosData[0];
+const productosPorLinea: Record<string, Producto[]> = {};
+
+productosData.forEach(prod => {
+  if (!productosPorLinea[prod.lineaId]) {
+    productosPorLinea[prod.lineaId] = [];
+  }
+  productosPorLinea[prod.lineaId].push(prod);
+});
+---
+
+<Layout title="Catálogo de productos | REAXSOL">
+  <div class="container" style="padding: 2rem 0;">
+    <h1 style="color: #000099;">Catálogo de productos</h1>
+    <p>Encuentre resinas, catalizadores, fibras y más. Organizado por líneas. Haga clic en cada línea para ver los productos.</p>
+
+    <div id="acordeon-lineas">
+      {lineasOrdenadas.map((linea, index) => {
+        const productosLinea = productosPorLinea[linea.id] || [];
+        if (productosLinea.length === 0) return null;
+        const isFirst = (index === 0); // primera línea desplegada por defecto
+        return (
+          <div class="linea-item" data-linea-id={linea.id}>
+            <button class="linea-header" aria-expanded={isFirst ? "true" : "false"}>
+              <span class="linea-titulo">{linea.descripcion}</span>
+              <span class="linea-icono">{isFirst ? "−" : "+"}</span>
+            </button>
+            <div class="linea-contenido" style={{ display: isFirst ? "block" : "none" }}>
+              <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+                {productosLinea.map(prod => (
+                  <div class="producto-card">
+                    {prod.imagenMini && (
+                        <img src={prod.imagenMini} alt={prod.nombre} loading="lazy" style="width: 100%; max-width: 150px; height: auto; display: block; margin: 0 auto 0.5rem auto; border-radius: 0.25rem;">
+                    )}
+                    <h3><a href={`/productos/${prod.slug}`} style="color: #000099; text-decoration: none;">{prod.nombre}</a></h3>
+                    <p class="producto-clave">Clave: {prod.clave} | Unidad: {prod.unidad}</p>
+                    <p class="producto-descripcion">{prod.descripcion.substring(0, 100)}{prod.descripcion.length > 100 ? '…' : ''}</p>
+                    <div><a href={`/productos/${prod.slug}`} class="btn btn-primary" style="background-color: #000099; color: #ffff00;">Consultar precio</a></div>
+                    <div class="producto-etiquetas">
+                      {prod.tieneFicha && <span class="etiqueta etiqueta-ficha">📄 Ficha</span>}
+                      {prod.tieneHDS && <span class="etiqueta etiqueta-hds">⚠️ HDS</span>}
+                      {prod.ventaML && <span class="etiqueta etiqueta-ml">🛒 ML</span>}
+                      {!prod.ventaML && <span class="etiqueta etiqueta-directa">📞 Venta directa</span>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .linea-item {
+    margin-bottom: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: white;
+  }
+  .linea-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background-color: #000099;
+    color: #ffff00;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  .linea-header:hover {
+    background-color: #0000cc;
+  }
+  .linea-titulo {
+    text-align: left;
+  }
+  .linea-icono {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  .linea-contenido {
+    padding: 1.5rem;
+    background-color: #fafafa;
+  }
+  .producto-card {
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    background: white;
+    transition: transform 0.1s, box-shadow 0.2s;
+  }
+  .producto-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .producto-clave {
+    font-size: 0.8rem;
+    color: #555;
+    margin: 0.5rem 0;
+  }
+  .producto-descripcion {
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+  }
+  .producto-etiquetas {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.8rem;
+    font-size: 0.7rem;
+  }
+  .etiqueta {
+    padding: 0.2rem 0.6rem;
+    border-radius: 1rem;
+    background: #eee;
+    color: #333;
+  }
+  .etiqueta-ficha { background: #e3f2fd; color: #0d47a1; }
+  .etiqueta-hds { background: #ffebee; color: #b71c1c; }
+  .etiqueta-ml { background: #ffff00; color: #000099; font-weight: bold; }
+  .etiqueta-directa { background: #e0e0e0; color: #000; }
+</style>
+
+<script>
+    // Acordeón: al hacer clic en el header, se despliega/contrae el contenido
+    document.querySelectorAll('.linea-header').forEach(button => {
+      button.addEventListener('click', () => {
+        const expanded = button.getAttribute('aria-expanded') === 'true' ? false : true;
+        // Convertir booleano a string para setAttribute
+        button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        
+        const contenido = button.nextElementSibling;
+        // Verificar que el contenido existe antes de manipularlo
+        if (contenido && contenido instanceof HTMLElement) {
+          contenido.style.display = expanded ? 'block' : 'none';
+        }
+        
+        // Cambiar icono
+        const icono = button.querySelector('.linea-icono');
+        if (icono) icono.textContent = expanded ? '−' : '+';
+      });
+    });
+  </script>

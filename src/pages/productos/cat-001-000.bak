@@ -1,0 +1,108 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+// Datos del producto
+const producto = {
+  clave: 'CAT-001-000',
+  nombre: 'Catalizador (peróxido de MEK)',
+  unidad: 'KG',
+  precio: null, // oculto, solo tras contacto
+  descripcionLarga: `
+    El Peróxido de Metiletilcetona (MEKP) al 50% es un iniciador de polimerización 
+    para resinas de poliéster insaturado, acrílicas y viniléster. Se usa en la 
+    fabricación de plásticos reforzados con fibra de vidrio, pisos industriales, 
+    reparaciones y manualidades técnicas.
+  `,
+  documentos: {
+    fichaTecnica: '/documentos/cat-001-000-ficha-tecnica.pdf',
+    hojaSeguridad: '/documentos/cat-001-000-hoja-seguridad.pdf'
+  },
+  ventaML: false,
+  ventaTiendaFisica: true,
+  ventaEnvioForaneo: true,
+  soloB2B: true
+};
+---
+
+<Layout title={`${producto.nombre} | REAXSOL`}>
+  <div class="container" style="padding: 2rem 0;">
+    <!-- Navegación de migas (breadcrumbs) -->
+    <p style="font-size: 0.8rem; color: #666;">
+      <a href="/" style="color: #000099;">Inicio</a> / 
+      <a href="/productos" style="color: #000099;">Productos</a> / 
+      <span style="color: #000099; font-weight: bold;">{producto.clave}</span>
+    </p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem;">
+      <!-- Columna izquierda: información principal -->
+      <div>
+        <h1 style="color: #000099; margin-top: 0;">{producto.nombre}</h1>
+        <p><strong>Clave:</strong> {producto.clave} | <strong>Unidad de venta:</strong> {producto.unidad}</p>
+        
+        {producto.soloB2B && (
+          <div style="background-color: #ffff00; color: #000099; padding: 0.5rem; border-radius: 0.3rem; margin-bottom: 1rem; font-weight: bold;">
+            ⚠️ Producto exclusivo para uso industrial (B2B). No disponible en Mercado Libre.
+          </div>
+        )}
+
+        <div style="margin: 1.5rem 0;">
+          <h3>Descripción</h3>
+          <p>{producto.descripcionLarga}</p>
+        </div>
+
+        <div style="margin: 2rem 0;">
+          <h3>Documentos técnicos</h3>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <a href={producto.documentos.fichaTecnica} class="btn btn-primary" download style="background-color: #000099; color: #ffff00; text-decoration: none;">📄 Descargar Ficha Técnica (PDF)</a>
+            <a href={producto.documentos.hojaSeguridad} class="btn btn-primary" download style="background-color: #000099; color: #ffff00; text-decoration: none;">⚠️ Descargar Hoja de Seguridad (PDF)</a>
+          </div>
+        </div>
+
+        <div style="margin: 2rem 0;">
+          <h3>Canales de venta</h3>
+          <ul>
+            <li>✅ Tienda física en Ecatepec</li>
+            <li>✅ Envíos a toda la República (foráneo)</li>
+            <li>❌ Mercado Libre (no disponible)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Columna derecha: cotización y contacto -->
+      <div style="background-color: var(--gris-claro); padding: 1.5rem; border-radius: 0.5rem; align-self: start;">
+        <h3 style="color: #000099; margin-top: 0;">Solicitar precio y disponibilidad</h3>
+        <p>El precio de este producto no se muestra públicamente por políticas del fabricante. Contáctenos para una cotización personalizada según volumen.</p>
+        
+        <form action="/gracias" method="post" data-netlify="true" netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="cotizacion-cat-001">
+          <input type="hidden" name="producto" value={producto.clave}>
+          <div style="margin-bottom: 1rem;">
+            <label>Nombre completo *</label>
+            <input type="text" name="nombre" required style="width: 100%; padding: 0.5rem;">
+          </div>
+          <div style="margin-bottom: 1rem;">
+            <label>Correo electrónico *</label>
+            <input type="email" name="email" required style="width: 100%; padding: 0.5rem;">
+          </div>
+          <div style="margin-bottom: 1rem;">
+            <label>Teléfono (opcional)</label>
+            <input type="tel" name="telefono" style="width: 100%; padding: 0.5rem;">
+          </div>
+          <div style="margin-bottom: 1rem;">
+            <label>Cantidad aproximada (kg)</label>
+            <input type="text" name="cantidad" placeholder="Ej. 200 kg" style="width: 100%; padding: 0.5rem;">
+          </div>
+          <button type="submit" class="btn btn-primary" style="background-color: #000099; color: #ffff00; width: 100%;">Enviar cotización</button>
+        </form>
+        
+        <p style="font-size: 0.7rem; text-align: center; margin-top: 1rem;">También puede contactarnos por WhatsApp al <a href="https://wa.me/525557151454" style="color: #000099;">55 5715 1454</a></p>
+      </div>
+    </div>
+
+    <!-- Sección de advertencia de seguridad (extraída de la SDS) -->
+    <div style="margin-top: 3rem; background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem;">
+      <h4 style="color: #856404;">⚠️ Información de seguridad importante</h4>
+      <p style="font-size: 0.9rem;">El peróxido de MEK es un oxidante fuerte. Almacenar ≤30°C, no mezclar directamente con aceleradores de cobalto. Consulte la Hoja de Seguridad completa antes de usar. <a href={producto.documentos.hojaSeguridad} style="color: #000099;">Descargar SDS</a></p>
+    </div>
+  </div>
+</Layout>

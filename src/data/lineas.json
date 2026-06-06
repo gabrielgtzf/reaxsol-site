@@ -1,0 +1,21 @@
+[
+  { "id": "RES", "orden": 1, "descripcion": "RESINAS" },
+  { "id": "GEL", "orden": 2, "descripcion": "GEL - COATS" },
+  { "id": "ACL", "orden": 3, "descripcion": "ACELERADORES" },
+  { "id": "CAT", "orden": 4, "descripcion": "CATALIZADORES" },
+  { "id": "PIG", "orden": 5, "descripcion": "PIGMENTOS" },
+  { "id": "DSM", "orden": 6, "descripcion": "DESMOLDANTES" },
+  { "id": "FVR", "orden": 7, "descripcion": "FIBRAS Y REFUERZOS" },
+  { "id": "FVA", "orden": 8, "descripcion": "FIBRAS AISLANTES" },
+  { "id": "DEC", "orden": 9, "descripcion": "DECORACION" },
+  { "id": "REP", "orden": 10, "descripcion": "REPARACION" },
+  { "id": "POL", "orden": 11, "descripcion": "POLIURETANO" },
+  { "id": "SIL", "orden": 12, "descripcion": "SILICONES" },
+  { "id": "TAL", "orden": 13, "descripcion": "CARGAS Y TALCOS" },
+  { "id": "SOL", "orden": 14, "descripcion": "SOLVENTES" },
+  { "id": "ACC", "orden": 15, "descripcion": "ACCESORIOS" },
+  { "id": "ENV", "orden": 16, "descripcion": "ENVASES" },
+  { "id": "ETQ", "orden": 17, "descripcion": "ETIQUETAS" },
+  { "id": "MPG", "orden": 18, "descripcion": "MATERIAS PRIMAS GENERALES" },
+  { "id": "PAS", "orden": 19, "descripcion": "PASTAS PARA PULIR" }
+]
