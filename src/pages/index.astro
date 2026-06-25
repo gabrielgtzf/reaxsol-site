@@ -96,8 +96,16 @@ const blogPosts = [
           <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; font-size: 0.7rem;">
             {prod.tieneFicha && <span style="background: #eee; padding: 0.2rem 0.5rem;">📄 Ficha</span>}
             {prod.tieneHDS && <span style="background: #eee; padding: 0.2rem 0.5rem;">⚠️ HDS</span>}
-            {prod.ventaML && <span style="background: #ffff00; color: #000099; padding: 0.2rem 0.5rem;">🛒 ML</span>}
-            {!prod.ventaML && <span style="background: #ddd; padding: 0.2rem 0.5rem;">📞 Venta directa</span>}
+            
+            <!-- Siempre mostramos venta directa -->
+            <span style="background: #ddd; padding: 0.2rem 0.5rem;">📞 Venta directa</span>
+            
+            <!-- Si tiene URL de ML, mostramos también ese canal -->
+            {prod.urlML && (
+              <a href={prod.urlML} target="_blank" rel="noopener noreferrer" style="background: #ffff00; color: #000099; padding: 0.2rem 0.5rem; text-decoration: none; border-radius: 0.3rem; font-weight: bold;">
+                🛒 ML
+              </a>
+            )}
           </div>
         </div>
       ))}

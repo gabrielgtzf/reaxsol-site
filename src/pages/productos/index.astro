@@ -27,7 +27,7 @@ productosData.forEach(prod => {
       {lineasOrdenadas.map((linea, index) => {
         const productosLinea = productosPorLinea[linea.id] || [];
         if (productosLinea.length === 0) return null;
-        const isFirst = (index === 0); // primera línea desplegada por defecto
+        const isFirst = (index === 0);
         return (
           <div class="linea-item" data-linea-id={linea.id}>
             <button class="linea-header" aria-expanded={isFirst ? "true" : "false"}>
@@ -39,7 +39,7 @@ productosData.forEach(prod => {
                 {productosLinea.map(prod => (
                   <div class="producto-card">
                     {prod.imagenMini && (
-                        <img src={prod.imagenMini} alt={prod.nombre} loading="lazy" style="width: 100%; max-width: 150px; height: auto; display: block; margin: 0 auto 0.5rem auto; border-radius: 0.25rem;">
+                      <img src={prod.imagenMini} alt={prod.nombre} loading="lazy" style="width: 100%; max-width: 150px; height: auto; display: block; margin: 0 auto 0.5rem auto; border-radius: 0.25rem;">
                     )}
                     <h3><a href={`/productos/${prod.slug}`} style="color: #000099; text-decoration: none;">{prod.nombre}</a></h3>
                     <p class="producto-clave">Clave: {prod.clave} | Unidad: {prod.unidad}</p>
@@ -48,8 +48,14 @@ productosData.forEach(prod => {
                     <div class="producto-etiquetas">
                       {prod.tieneFicha && <span class="etiqueta etiqueta-ficha">📄 Ficha</span>}
                       {prod.tieneHDS && <span class="etiqueta etiqueta-hds">⚠️ HDS</span>}
-                      {prod.ventaML && <span class="etiqueta etiqueta-ml">🛒 ML</span>}
-                      {!prod.ventaML && <span class="etiqueta etiqueta-directa">📞 Venta directa</span>}
+                      <!-- Siempre mostramos venta directa -->
+                      <span class="etiqueta etiqueta-directa">📞 Venta directa</span>
+                      <!-- Si tiene URL de ML, mostramos también ese canal -->
+                      {prod.urlML && (
+                        <a href={prod.urlML} target="_blank" rel="noopener noreferrer" class="etiqueta etiqueta-ml" style="text-decoration: none;">
+                          🛒 ML
+                        </a>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -138,22 +144,22 @@ productosData.forEach(prod => {
 </style>
 
 <script>
-    // Acordeón: al hacer clic en el header, se despliega/contrae el contenido
-    document.querySelectorAll('.linea-header').forEach(button => {
-      button.addEventListener('click', () => {
-        const expanded = button.getAttribute('aria-expanded') === 'true' ? false : true;
-        // Convertir booleano a string para setAttribute
-        button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-        
-        const contenido = button.nextElementSibling;
-        // Verificar que el contenido existe antes de manipularlo
-        if (contenido && contenido instanceof HTMLElement) {
-          contenido.style.display = expanded ? 'block' : 'none';
-        }
-        
-        // Cambiar icono
-        const icono = button.querySelector('.linea-icono');
-        if (icono) icono.textContent = expanded ? '−' : '+';
-      });
+  // Acordeón: al hacer clic en el header, se despliega/contrae el contenido
+  document.querySelectorAll('.linea-header').forEach(button => {
+    button.addEventListener('click', () => {
+      const expanded = button.getAttribute('aria-expanded') === 'true' ? false : true;
+      // Convertir booleano a string para setAttribute
+      button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      
+      const contenido = button.nextElementSibling;
+      // Verificar que el contenido existe antes de manipularlo
+      if (contenido && contenido instanceof HTMLElement) {
+        contenido.style.display = expanded ? 'block' : 'none';
+      }
+      
+      // Cambiar icono
+      const icono = button.querySelector('.linea-icono');
+      if (icono) icono.textContent = expanded ? '−' : '+';
     });
-  </script>
+  });
+</script>

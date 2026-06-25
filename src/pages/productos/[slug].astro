@@ -10,7 +10,7 @@ export async function getStaticPaths() {
 }
 
 const { producto } = Astro.props;
-const tieneML = producto.ventaML;
+const tieneML = !!producto.urlML; // true si existe urlML
 const soloDirecto = !tieneML;
 ---
 
@@ -24,10 +24,11 @@ const soloDirecto = !tieneML;
     </p>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem;">
+      <!-- Columna izquierda: información -->
       <div>
-          {producto.imagenGrande && (
-            <img src={producto.imagenGrande} alt={producto.nombre} style="width: 100%; max-width: 400px; height: auto; margin-bottom: 1rem; border-radius: 0.5rem;">
-          )}
+        {producto.imagenGrande && (
+          <img src={producto.imagenGrande} alt={producto.nombre} style="width: 100%; max-width: 400px; height: auto; margin-bottom: 1rem; border-radius: 0.5rem;">
+        )}
         <h1 style="color: #000099; margin-top: 0;">{producto.nombre}</h1>
         <p><strong>Clave:</strong> {producto.clave} | <strong>Unidad:</strong> {producto.unidad}</p>
 
@@ -43,7 +44,7 @@ const soloDirecto = !tieneML;
         </div>
 
         <div style="margin: 2rem 0;">
-          <h3>Documentos técnicos</h3>
+          <h3>Documentos y compra</h3>
           <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
             {producto.tieneFicha && (
               <a href={producto.urlFicha} class="btn btn-primary" download style="background-color: #000099; color: #ffff00;">📄 Ficha técnica (PDF)</a>
@@ -51,8 +52,10 @@ const soloDirecto = !tieneML;
             {producto.tieneHDS && (
               <a href={producto.urlHDS} class="btn btn-primary" download style="background-color: #000099; color: #ffff00;">⚠️ Hoja de seguridad (PDF)</a>
             )}
-            {!producto.tieneFicha && !producto.tieneHDS && (
-              <p style="color: #666;">Este producto no cuenta con fichas técnicas o SDS disponibles en línea. Consúltenos.</p>
+            {producto.urlML && (
+              <a href={producto.urlML} target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="background-color: #000099; color: #ffff00;">
+                🛒 Comprar en Mercado Libre
+              </a>
             )}
           </div>
         </div>
@@ -61,15 +64,22 @@ const soloDirecto = !tieneML;
           <h3>Canales de venta</h3>
           <ul>
             <li>✅ Tienda física en Ecatepec</li>
-            <li>✅ Envíos a toda la República</li>
-            {tieneML ? <li>✅ Mercado Libre disponible</li> : <li>❌ No disponible en Mercado Libre</li>}
+            <li>✅ Envíos a toda la República (foráneo)</li>
+            <li>
+              {producto.urlML ? (
+                <span>✅ También disponible en <a href={producto.urlML} target="_blank" rel="noopener noreferrer">Mercado Libre</a></span>
+              ) : (
+                <span>❌ No disponible en Mercado Libre</span>
+              )}
+            </li>
           </ul>
         </div>
       </div>
 
+      <!-- Columna derecha: cotización -->
       <div style="background-color: var(--gris-claro); padding: 1.5rem; border-radius: 0.5rem; align-self: start;">
-        <h3 style="color: #000099; margin-top: 0;">Solicitar precio</h3>
-        <p>Precio no mostrado públicamente. Contáctenos para cotización personalizada.</p>
+        <h3 style="color: #000099; margin-top: 0;">Solicitar precio (venta directa)</h3>
+        <p>El precio no se muestra públicamente. Contáctenos para cotización personalizada por volumen o para envíos.</p>
 
         <form action="/gracias" method="post" data-netlify="true" netlify-honeypot="bot-field">
           <input type="hidden" name="form-name" value="cotizacion-producto">
@@ -88,7 +98,7 @@ const soloDirecto = !tieneML;
           </div>
           <div style="margin-bottom: 1rem;">
             <label>Cantidad / especificación</label>
-            <input type="text" name="cantidad" placeholder="Ej. 200 kg" style="width: 100%; padding: 0.5rem;">
+            <input type="text" name="cantidad" placeholder="Ej. 200 kg, 5 piezas" style="width: 100%; padding: 0.5rem;">
           </div>
           <button type="submit" class="btn btn-primary" style="background-color: #000099; color: #ffff00; width: 100%;">Enviar cotización</button>
         </form>
